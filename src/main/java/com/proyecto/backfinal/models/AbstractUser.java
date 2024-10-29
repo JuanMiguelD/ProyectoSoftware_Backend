@@ -6,6 +6,7 @@ import lombok.Setter;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "users")
 @AllArgsConstructor
 public abstract class AbstractUser {
     @Id

@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import jakarta.persistence.*;
 
+
 public class Writer extends AbstractUser {
     @Getter @Setter
     private  String biography;
