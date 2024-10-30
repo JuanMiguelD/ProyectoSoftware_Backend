@@ -5,17 +5,21 @@ import lombok.Getter;
 import lombok.Setter;
 import jakarta.persistence.*;
 
+@Entity
+@DiscriminatorValue("WRITER")
 
 public class Writer extends AbstractUser {
+
+    @Transient
     @Getter @Setter
     private  String biography;
 
-    @OneToMany(mappedBy = "autor", cascade = CascadeType.ALL)
-    @Getter @Setter
+    @Transient
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     private ArrayList<AbstractBook>  books;
 
-    public Writer(int isbn, String name, String email, String password, String biography, String role) {
-        super(isbn, name, email, password, role);
+    public Writer( String name, String email, String password, String biography) {
+        super(name, email, password);
         this.biography = biography;
         this.books = new ArrayList<>(); // Inicializa una lista vacía
     }

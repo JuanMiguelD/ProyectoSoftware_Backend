@@ -1,16 +1,19 @@
 package com.proyecto.backfinal.models;
 
-import lombok.AllArgsConstructor;
+
 import lombok.Getter;
 import lombok.Setter;
 import jakarta.persistence.*;
 
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE) // Estrategia de tabla única
 @Table(name = "users")
-@AllArgsConstructor
+@DiscriminatorColumn(name = "role")
 public abstract class AbstractUser {
+
     @Id
-    @Getter @Setter
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Getter
     private int id;
 
     @Getter @Setter
@@ -22,7 +25,12 @@ public abstract class AbstractUser {
     @Getter @Setter  
     private String password;
 
-    @Getter  @Setter
-    private String role;
+
+    public  AbstractUser(String name, String email, String password) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+    }
+
     
 }
