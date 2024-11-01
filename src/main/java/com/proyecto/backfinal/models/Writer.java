@@ -17,6 +17,7 @@ public class Writer extends AbstractUser {
     @Transient
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     private ArrayList<AbstractBook>  books;
+    
 
     public Writer( String name, String email, String password, String biography) {
         super(name, email, password);

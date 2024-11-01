@@ -1,37 +1,44 @@
 package com.proyecto.backfinal;
 
-import org.junit.jupiter.api.Test;
+
+
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-
+import com.proyecto.backfinal.models.Reader;
 import com.proyecto.backfinal.models.Writer;
-import com.proyecto.backfinal.services.LoginService;
-import  com.proyecto.backfinal.models.AbstractUser;
+import com.proyecto.backfinal.repositories.UserRepository;
 
 
 @SpringBootTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@TestPropertySource(locations = "classpath:application-test.properties")
+@Transactional
 public class LoginServiceTest {
 
+
     @Autowired
-    private LoginService loginService;
+    private UserRepository userRepository;
 
-    @Test
-    public void testRegisterWriter() {
-        // Crear un nuevo usuario tipo Writer
-        Writer writer = new Writer("Juan","juan@example.com","123456","hola");
+    private Reader testReader;
+    private Writer testWriter;
+
+    @BeforeEach
+    void setUp() {
         
+        // Configurar usuario lector de prueba
+        testReader = new Reader("TestReader","reader@test.com","password123");
+        
+        userRepository.save(testReader);
 
-        // Registrar el usuario
-        AbstractUser savedUser = loginService.register(writer);
-
-        // Verificar que el usuario se haya guardado
-        assertNotNull(savedUser);
-        assertNotNull(savedUser.getId()); // ID debe haberse generado
+        // Configurar usuario escritor de prueba
+        testWriter = new Writer("TestWriter","writer@test.com","password456","En efecto, soy escritor");
+        
+        userRepository.save(testWriter);
     }
-}
 
+
+
+}

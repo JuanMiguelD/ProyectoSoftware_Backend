@@ -3,6 +3,10 @@ package com.proyecto.backfinal.models;
 
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -14,7 +18,7 @@ public abstract class AbstractUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter
-    private int id;
+    private long id;
 
     @Getter @Setter
     private String name;
@@ -25,11 +29,15 @@ public abstract class AbstractUser {
     @Getter @Setter  
     private String password;
 
+    @OneToMany(mappedBy = "user")
+    private List<Purchase> purchases;
+
 
     public  AbstractUser(String name, String email, String password) {
         this.name = name;
         this.email = email;
         this.password = password;
+        this.purchases = new ArrayList();
     }
 
     
