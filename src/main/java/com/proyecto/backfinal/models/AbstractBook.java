@@ -12,7 +12,6 @@ import lombok.Setter;
 public abstract class AbstractBook {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter @Setter
     private  long isbn;
 
@@ -34,7 +33,8 @@ public abstract class AbstractBook {
     private List<Purchase> purchases;
     
 
-    public AbstractBook(String title, String genre, String publication,  Writer author) {
+    public AbstractBook(Long isbn,String title, String genre, String publication,  Writer author) {
+        this.isbn = isbn;
         this.title = title;
         this.genre = genre;
         this.publication = publication;

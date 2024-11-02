@@ -34,7 +34,7 @@ public class UserService {
     // Cambiar la contraseña utilizando el correo
     public AbstractUser changePassword(String email, String oldPassword, String newPassword) {
         return Optional.ofNullable(userRepository.findByEmail(email))
-            .map(user -> {
+                .map(user -> {
                 if (user.getPassword().equals(oldPassword)) {
                     user.setPassword(newPassword);
                     return userRepository.save(user);
