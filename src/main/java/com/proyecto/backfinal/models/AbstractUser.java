@@ -33,7 +33,9 @@ public abstract class AbstractUser {
     private List<Purchase> purchases;
 
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public  AbstractUser(String name, String email, String password) {
+        
         this.name = name;
         this.email = email;
         this.password = password;
