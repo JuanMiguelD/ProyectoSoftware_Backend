@@ -31,13 +31,18 @@ public abstract class AbstractBook {
 
     @OneToMany(mappedBy = "book")
     private List<Purchase> purchases;
+
+    @Getter @Setter
+    private String contenido;
     
 
-    public AbstractBook(Long isbn,String title, String genre, String publication,  Writer author) {
+    public AbstractBook(Long isbn,String title, String genre, String publication,  Writer author, String contenido) {
         this.isbn = isbn;
         this.title = title;
         this.genre = genre;
         this.publication = publication;
         this.author = author;
+        this.contenido = contenido;
+        
     }
 }

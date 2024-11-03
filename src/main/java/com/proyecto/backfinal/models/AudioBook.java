@@ -5,9 +5,9 @@ import jakarta.persistence.Entity;
 @Entity
 public class AudioBook extends AbstractBook{
     
-    public AudioBook(Long isbn, String title,String genre, String publication, Writer author){
+    public AudioBook(Long isbn, String title,String genre, String publication, Writer author, String contenido){
         
-        super(isbn,title, genre,publication, author);
+        super(isbn,title, genre,publication, author, contenido);
 
     }
 }
