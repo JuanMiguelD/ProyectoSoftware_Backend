@@ -24,7 +24,7 @@ jobs:
           ${{ runner.os }}-maven
 
     - name: Build the project
-      run: mvn clean  package -B -V
+      run: mvn clean package -B -V -X
 
 
   test:
