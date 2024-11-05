@@ -9,7 +9,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface BookRepository  extends JpaRepository<AbstractBook, Long> {
     
 
-    void  deleteByIsbn(Long isbn);
+    void  deleteByIsbn(String isbn);
 
-    List<AbstractBook> findByAuthor(Writer writer);
+    List<AbstractBook> findByWriterId(Long writer);
+
+    List<AbstractBook> findByGenre(String Genre);
+
+    
 }

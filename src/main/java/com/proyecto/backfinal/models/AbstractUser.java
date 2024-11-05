@@ -42,5 +42,8 @@ public abstract class AbstractUser {
         this.purchases = new ArrayList();
     }
 
+    public AbstractUser() {
+    }
+
     
 }

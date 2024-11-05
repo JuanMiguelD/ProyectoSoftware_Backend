@@ -18,6 +18,9 @@ public class Writer extends AbstractUser {
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     private ArrayList<AbstractBook>  books;
     
+    public Writer(){
+        
+    }
 
     public Writer( String name, String email, String password, String biography) {
         super(name, email, password);
@@ -30,12 +33,6 @@ public class Writer extends AbstractUser {
         this.books.add(book); 
     
     }
-
-    public void deleteBook(int isbn){
-        this.books.removeIf(book -> (book.getIsbn() == isbn));
-    }
-    
-    
 
     
 }

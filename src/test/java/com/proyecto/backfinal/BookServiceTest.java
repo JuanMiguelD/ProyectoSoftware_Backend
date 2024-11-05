@@ -35,9 +35,9 @@ class BookServiceTest {
         
         testWriter = new Writer("test Writer","examplemail@example.com","1234","hi");
         
-        testBook = new ElectronicBook(1L,"Title Test", "Genre Test", "2020-10-17",testWriter,"urlTest");
+        testBook = new ElectronicBook("978-950-563-656-3","Title Test", "Genre Test", "2020-10-17",testWriter,"urlTest");
         
-        testBook.setAuthor(testWriter);
+        testBook.setWriter(testWriter);
     }
 
     @Test
@@ -54,14 +54,14 @@ class BookServiceTest {
 
     @Test
     void deleteBook_ShouldCallRepositoryDelete() {
-        bookService.deleteBook(1L);
+        bookService.deleteBook("978-950-563-656-3");
 
-        verify(bookRepository, times(1)).deleteByIsbn(1L);
+        verify(bookRepository, times(1)).deleteByIsbn("978-950-563-656-3");
     }
 
     @Test
     void updateBook_WhenBookExists_ShouldReturnUpdatedBook() {
-        AbstractBook updatedBook = new AudioBook(1L,"Updated Title", "Updated Genre", "2020-10-17",testWriter,"urlTest");
+        AbstractBook updatedBook = new AudioBook("978-950-563-656-3","Updated Title", "Updated Genre", "2020-10-17",testWriter,"urlTest");
 
 
         when(bookRepository.findById(1L)).thenReturn(Optional.of(testBook));
@@ -114,7 +114,7 @@ class BookServiceTest {
 
     @Test
     void getBook_WhenBookDoesNotExist_ShouldThrowException() {
-        testBook = new ElectronicBook(1L,"Title Test", "Genre Test", "2020-10-17",testWriter,"urlTest");
+        testBook = new ElectronicBook("978-950-563-656-3","Title Test", "Genre Test", "2020-10-17",testWriter,"urlTest");
         
         when(bookRepository.findById(1L)).thenReturn(Optional.empty());
 
@@ -129,13 +129,13 @@ class BookServiceTest {
     void getBooksByWriter_ShouldReturnWriterBooks() {
         List<AbstractBook> expectedBooks = Arrays.asList(testBook);
         
-        when(bookRepository.findByAuthor(testWriter)).thenReturn(expectedBooks);
+        when(bookRepository.findByWriterId(1L)).thenReturn(expectedBooks);
 
-        List<AbstractBook> result = bookService.getBooksByWriter(testWriter);
+        List<AbstractBook> result = bookService.getBooksByWriterId(1L);
 
         assertNotNull(result);
         assertEquals(expectedBooks.size(), result.size());
         assertEquals(expectedBooks, result);
-        verify(bookRepository, times(1)).findByAuthor(testWriter);
+        verify(bookRepository, times(1)).findByWriterId(1L);
     }
 }

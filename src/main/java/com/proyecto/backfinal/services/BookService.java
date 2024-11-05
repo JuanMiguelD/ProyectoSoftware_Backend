@@ -21,7 +21,7 @@ public class BookService {
     }
     
 
-    public void  deleteBook(Long isbn) {
+    public void  deleteBook(String isbn) {
         bookRepository.deleteByIsbn(isbn);
     }
 
@@ -45,8 +45,12 @@ public class BookService {
         return bookRepository.findById(isbn).orElseThrow(() -> new RuntimeException("Book not found"));
     }
 
-    public  List<AbstractBook> getBooksByWriter(Writer writer) {
-        return bookRepository.findByAuthor(writer);
+    public  List<AbstractBook> getBooksByWriterId(Long writer) {
+        return bookRepository.findByWriterId(writer);
+    }
+
+    public  List<AbstractBook> getBooksByGenre(String Genre) {
+        return bookRepository.findByGenre(Genre);
     }
 
 }

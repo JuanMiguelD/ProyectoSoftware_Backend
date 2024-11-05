@@ -12,6 +12,7 @@ import org.mockito.MockitoAnnotations;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 public class UserServiceTest {
@@ -35,7 +36,7 @@ public class UserServiceTest {
         
 
         // Configuración del mock para devolver el usuario
-        when(userRepository.findByEmail(email)).thenReturn(writer);
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(writer));
 
         // Llamada al método y verificación del resultado
         Optional<AbstractUser> result = userService.getUserByEmail(email);
@@ -44,14 +45,17 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testGetUserByEmail_UserNotFound() {
+    void testGetUserByEmail_UserNotFound() {
+
         String email = "nonexistent@example.com";
 
-        // Configuración del mock para devolver null (usuario no encontrado)
-        when(userRepository.findByEmail(email)).thenReturn(null);
-
+        
+        when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
         Optional<AbstractUser> result = userService.getUserByEmail(email);
-        assertFalse(result.isPresent());
+
+        
+        assertTrue(result.isEmpty());  // or assertFalse(result.isPresent())
+        verify(userRepository).findByEmail(email);
     }
 
     // Prueba para actualizar la información del usuario
@@ -64,7 +68,7 @@ public class UserServiceTest {
 
         Writer updatedUser = new Writer("New Name", email,"1234","hola");
 
-        when(userRepository.findByEmail(email)).thenReturn(existingUser);
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(existingUser));
 
         when(userRepository.save(any(Writer.class))).thenReturn(updatedUser);
 
@@ -82,7 +86,7 @@ public class UserServiceTest {
         Reader reader = new Reader("Testname",email,oldPassword);
         
 
-        when(userRepository.findByEmail(email)).thenReturn(reader);
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(reader));
         when(userRepository.save(any(Reader.class))).thenReturn(reader);
 
         AbstractUser result = userService.changePassword(email, oldPassword, newPassword);
@@ -94,11 +98,11 @@ public class UserServiceTest {
     public void testChangePassword_Failure_WrongOldPassword() {
         String email = "test@example.com";
         String oldPassword = "incorrectOldPassword";
-        Reader reader = new Reader("TestName", "test@example.com","actualOldPassword");
+        AbstractUser reader = new Reader("TestName", "test@example.com","actualOldPassword");
         reader.setPassword("actualOldPassword");
 
-        when(userRepository.findByEmail(email)).thenReturn(reader);
-        when(userRepository.save(any(Reader.class))).thenReturn(reader);
+       when(userRepository.findByEmail(email)).thenReturn(Optional.of(reader));
+       when(userRepository.save(any(AbstractUser.class))).thenReturn(reader);;
 
         assertThrows(RuntimeException.class, () -> userService.changePassword("test@example.com", oldPassword, "newPassword"));
     }

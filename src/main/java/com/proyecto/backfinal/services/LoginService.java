@@ -1,5 +1,7 @@
 package com.proyecto.backfinal.services;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.proyecto.backfinal.models.*;
@@ -11,11 +13,17 @@ public class LoginService {
     private UserRepository userRepository;
 
     public AbstractUser login(String email, String password) {
-        AbstractUser user = userRepository.findByEmail(email);
-        if (user != null && user.getPassword().equals(password)) {
-            return user; // El usuario ha iniciado sesión correctamente
+        Optional<AbstractUser> userOptional = userRepository.findByEmail(email);
+    
+        // Verifica si el usuario está presente y si la contraseña coincide
+        if (userOptional != null && userOptional.isPresent()) {
+            AbstractUser user = userOptional.get();
+
+            if (user.getPassword().equals(password)) {
+                return user;
+            }
         }
-        return null; // Login fallido
+        return null; // Retorna null si el usuario no existe o la contraseña no coincide
     }
 
     public AbstractUser register(AbstractUser user) {

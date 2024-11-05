@@ -5,6 +5,9 @@ import lombok.Setter;
 
 public class BookDTO {
     @Getter @Setter
+    private String isbn;
+
+    @Getter @Setter
     private String title;
     
     @Getter @Setter
@@ -12,7 +15,15 @@ public class BookDTO {
     
     @Getter @Setter
     private String content;
+
+    @Getter @Setter
+    private String publication;
     
     @Getter @Setter
-    private Long autorId; 
+    private Long writer;
+
+    public String getType() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getType'");
+    } 
 }

@@ -9,11 +9,12 @@ import lombok.Setter;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE) // Estrategia de tabla única
 @Table(name = "books")
+@DiscriminatorColumn(name = "type")
 public abstract class AbstractBook {
 
     @Id
     @Getter @Setter
-    private  long isbn;
+    private  String isbn;
 
     @Getter @Setter
     private  String title;
@@ -27,7 +28,7 @@ public abstract class AbstractBook {
     @ManyToOne
     @JoinColumn(name = "author_id", nullable=false)
     @Getter @Setter
-    private  Writer author;
+    private  Writer writer;
 
     @OneToMany(mappedBy = "book")
     private List<Purchase> purchases;
@@ -36,12 +37,12 @@ public abstract class AbstractBook {
     private String contenido;
     
 
-    public AbstractBook(Long isbn,String title, String genre, String publication,  Writer author, String contenido) {
+    public AbstractBook(String isbn,String title, String genre, String publication,  Writer author, String contenido) {
         this.isbn = isbn;
         this.title = title;
         this.genre = genre;
         this.publication = publication;
-        this.author = author;
+        this.writer = author;
         this.contenido = contenido;
         
     }

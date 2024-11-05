@@ -17,12 +17,17 @@ public class UserService {
     }
 
     public Optional<AbstractUser> getUserByEmail(String email) {
-        return Optional.ofNullable(userRepository.findByEmail(email));
+        return userRepository.findByEmail(email);
     }
+
+    public Optional<AbstractUser> getUserById(Long id) {
+        return userRepository.findById(id);
+    }
+
 
     // Actualizar información del usuario utilizando el correo
     public AbstractUser updateUser(String email, AbstractUser updatedUser) {
-        return Optional.ofNullable(userRepository.findByEmail(email))
+        return (userRepository.findByEmail(email))
             .map(user -> {
                 user.setName(updatedUser.getName());
                 user.setEmail(updatedUser.getEmail());
@@ -33,7 +38,7 @@ public class UserService {
 
     // Cambiar la contraseña utilizando el correo
     public AbstractUser changePassword(String email, String oldPassword, String newPassword) {
-        return Optional.ofNullable(userRepository.findByEmail(email))
+        return (userRepository.findByEmail(email))
                 .map(user -> {
                 if (user.getPassword().equals(oldPassword)) {
                     user.setPassword(newPassword);
@@ -45,13 +50,15 @@ public class UserService {
             .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
     }
 
-    // Eliminar usuario utilizando el correo
+   // Eliminar usuario utilizando el correo
     public void deleteUser(String email) {
-        AbstractUser user = userRepository.findByEmail(email);
-        if (user != null) {
-            userRepository.delete(user);
+        Optional<AbstractUser> userOptional = userRepository.findByEmail(email);
+        if (userOptional.isPresent()) {
+            AbstractUser user = userOptional.get(); // Obtener el usuario del Optional
+            userRepository.delete(user); // Eliminar el usuario
         } else {
             throw new RuntimeException("User not found with email: " + email);
         }
     }
+
 }
