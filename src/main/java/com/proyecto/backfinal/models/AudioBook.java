@@ -12,4 +12,8 @@ public class AudioBook extends AbstractBook{
         super(isbn,title, genre,publication, author, contenido);
 
     }
+
+    public AudioBook(){
+        
+    }
 }

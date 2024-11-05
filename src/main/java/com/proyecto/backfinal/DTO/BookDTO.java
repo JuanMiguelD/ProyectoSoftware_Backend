@@ -22,8 +22,8 @@ public class BookDTO {
     @Getter @Setter
     private Long writer;
 
-    public String getType() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getType'");
-    } 
+    @Getter @Setter
+    private String type;
+
+     
 }

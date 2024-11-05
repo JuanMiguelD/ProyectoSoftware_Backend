@@ -46,4 +46,8 @@ public abstract class AbstractBook {
         this.contenido = contenido;
         
     }
+
+    public AbstractBook(){
+        
+    }
 }

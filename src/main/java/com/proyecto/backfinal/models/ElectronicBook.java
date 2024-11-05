@@ -13,4 +13,7 @@ public class ElectronicBook extends AbstractBook{
 
     }
     
+    public ElectronicBook(){
+
+    }
 }

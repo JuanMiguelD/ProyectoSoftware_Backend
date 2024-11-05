@@ -25,6 +25,7 @@ import com.proyecto.backfinal.services.UserService;
 public class BookController {
     @Autowired
     private BookService bookService;
+    @Autowired
     private UserService  userService;
 
 
