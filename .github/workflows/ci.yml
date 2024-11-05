@@ -24,7 +24,8 @@ jobs:
           ${{ runner.os }}-maven
 
     - name: Build the project
-      run: mvn clean build
+      run: mvn clean  package -B -V
+
 
   test:
     runs-on: ubuntu-latest
