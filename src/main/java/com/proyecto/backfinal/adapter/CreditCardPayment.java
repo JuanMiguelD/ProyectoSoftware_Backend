@@ -2,7 +2,9 @@ package com.proyecto.backfinal.adapter;
 
 public class CreditCardPayment implements  PaymentMethod {
     private String cardNumber;
+    @SuppressWarnings("unused")
     private String expirationDate;
+    @SuppressWarnings("unused")
     private String cvv;
 
     public CreditCardPayment(String cardNumber, String cvv, String expiryDate) {
@@ -13,18 +15,15 @@ public class CreditCardPayment implements  PaymentMethod {
 
     @Override
     public boolean processPayment(double amount) {
-        // TODO Auto-generated method stub
         System.out.println("Procesando pago con tarjeta: " + maskCardNumber(cardNumber));  
         return true;  
     }
     @Override
     public String getPaymentMethod() {
-        // TODO Auto-generated method stub
         return String.format("Pago con tarjeta terminada en %s", cardNumber.substring(cardNumber.length() - 4));
     }
     @Override
     public String getTransactionDetails() {
-        // TODO Auto-generated method stub
         return "**** **** **** " + cardNumber.substring(cardNumber.length() - 4);
     }
 

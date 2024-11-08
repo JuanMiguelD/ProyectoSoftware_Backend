@@ -2,6 +2,8 @@ package com.proyecto.backfinal.models;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,12 +11,11 @@ import lombok.Setter;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE) // Estrategia de tabla única
 @Table(name = "books")
-@DiscriminatorColumn(name = "type")
+@DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
 public abstract class AbstractBook {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Getter
     private long bookId;
 
     @Getter @Setter
@@ -36,6 +37,7 @@ public abstract class AbstractBook {
 
     @OneToMany(mappedBy = "book")
     @Getter
+    @JsonIgnore
     private List<Purchase> purchases;
 
     @Getter @Setter

@@ -138,4 +138,49 @@ class BookServiceTest {
         assertEquals(expectedBooks, result);
         verify(bookRepository, times(1)).findByWriterId(1L);
     }
+
+    @Test
+    public void testGetBooksByGenre_ReturnsBooks() {
+        // Datos de prueba
+        String genre = "Science Fiction";
+        AbstractBook book1 = new ElectronicBook();
+        book1.setTitle("Dune");
+        book1.setGenre(genre);
+    
+
+        AbstractBook book2 = new AudioBook();
+        book2.setTitle("Neuromancer");
+        book2.setGenre(genre);
+
+        List<AbstractBook> books = Arrays.asList(book1, book2);
+
+        // Configuración del mock
+        when(bookRepository.findByGenre(genre)).thenReturn(books);
+
+        // Llamada al método
+        List<AbstractBook> result = bookService.getBooksByGenre(genre);
+
+        // Verificaciones
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertEquals("Dune", result.get(0).getTitle());
+        assertEquals("Neuromancer", result.get(1).getTitle());
+        verify(bookRepository, times(1)).findByGenre(genre);
+    }
+
+    @Test
+    public void testGetBooksByGenre_ReturnsEmptyList() {
+        String genre = "Nonexistent Genre";
+
+        // Configuración del mock
+        when(bookRepository.findByGenre(genre)).thenReturn(Arrays.asList());
+
+        // Llamada al método
+        List<AbstractBook> result = bookService.getBooksByGenre(genre);
+
+        // Verificaciones
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+        verify(bookRepository, times(1)).findByGenre(genre);
+    }
 }

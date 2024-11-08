@@ -60,8 +60,7 @@ public class BookController {
 
     @PostMapping("/bygenres")
     public ResponseEntity<List<AbstractBook>> getBookByGenres(@RequestBody String genre){
-        List<AbstractBook> books;
-        books = bookService.getBooksByGenre(genre);
+         List<AbstractBook> books = bookService.getBooksByGenre(genre);
         if(books.isEmpty()){
             return ResponseEntity.noContent().build();
         }

@@ -2,6 +2,9 @@ package com.proyecto.backfinal.models;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import lombok.Getter;
 import lombok.Setter;
 import jakarta.persistence.*;
@@ -9,11 +12,14 @@ import jakarta.persistence.*;
 @Entity
 @DiscriminatorValue("WRITER")
 
+@JsonIgnoreProperties({"purchases"})
 public class Writer extends AbstractUser {
 
     @Transient
     @Getter @Setter
     private  String biography;
+
+    @JsonIgnore
 
     @OneToMany(mappedBy = "writer", cascade = CascadeType.ALL)
     @Getter @Setter
