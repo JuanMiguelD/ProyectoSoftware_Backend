@@ -29,7 +29,7 @@ public abstract class AbstractUser {
     @Getter @Setter  
     private String password;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     @Getter
     private List<Purchase> purchases;
 

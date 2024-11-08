@@ -35,10 +35,17 @@ public abstract class AbstractBook {
     @Getter @Setter
     private  Writer writer;
 
-    @OneToMany(mappedBy = "book")
-    @Getter
-    @JsonIgnore
-    private List<Purchase> purchases;
+    @ManyToMany
+    @JoinTable(
+        name = "user_books",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "book_id")
+    )
+    
+    @JsonIgnore 
+    @Getter @Setter
+    private List<AbstractBook> purchasedBooks;
+
 
     @Getter @Setter
     private String contenido;

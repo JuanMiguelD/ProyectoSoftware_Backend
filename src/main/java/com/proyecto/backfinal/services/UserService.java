@@ -4,6 +4,9 @@ import com.proyecto.backfinal.repositories.UserRepository;
 import com.proyecto.backfinal.models.AbstractUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+
+
 import java.util.Optional;
 
 @Service
@@ -15,6 +18,8 @@ public class UserService {
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
+
+    
 
     public Optional<AbstractUser> getUserByEmail(String email) {
         return userRepository.findByEmail(email);
@@ -60,6 +65,8 @@ public class UserService {
             throw new RuntimeException("User not found with email: " + email);
         }
     }
+    
 
+    
 
 }
