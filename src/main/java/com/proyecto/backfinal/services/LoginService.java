@@ -27,6 +27,9 @@ public class LoginService {
     }
 
     public AbstractUser register(AbstractUser user) {
+        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+            return null; // Retorna null si el usuario ya existe
+        }
         return userRepository.save(user); // Guarda al usuario en la base de datos
     }
 }

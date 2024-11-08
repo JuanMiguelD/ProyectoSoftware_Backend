@@ -13,6 +13,10 @@ import lombok.Setter;
 public abstract class AbstractBook {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Getter
+    private long bookId;
+
     @Getter @Setter
     private  String isbn;
 
@@ -31,19 +35,24 @@ public abstract class AbstractBook {
     private  Writer writer;
 
     @OneToMany(mappedBy = "book")
+    @Getter
     private List<Purchase> purchases;
 
     @Getter @Setter
     private String contenido;
+
+    @Getter @Setter
+    private int precio;
     
 
-    public AbstractBook(String isbn,String title, String genre, String publication,  Writer author, String contenido) {
+    public AbstractBook(String isbn,String title, String genre, String publication,  Writer author, String contenido, int precio) {
         this.isbn = isbn;
         this.title = title;
         this.genre = genre;
         this.publication = publication;
         this.writer = author;
         this.contenido = contenido;
+        this.precio = precio;
         
     }
 

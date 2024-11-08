@@ -30,6 +30,7 @@ public abstract class AbstractUser {
     private String password;
 
     @OneToMany(mappedBy = "user")
+    @Getter
     private List<Purchase> purchases;
 
 

@@ -3,7 +3,9 @@ package com.proyecto.backfinal.models;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
+@Data
 @Entity
 @Table(name = "purchases")
 public class Purchase {
@@ -30,6 +32,7 @@ public class Purchase {
     public Purchase(){
         this.purchaseDate = LocalDateTime.now();
     }
+
 
 
     

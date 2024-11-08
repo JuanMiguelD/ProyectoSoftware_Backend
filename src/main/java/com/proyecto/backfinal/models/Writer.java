@@ -1,5 +1,6 @@
 package com.proyecto.backfinal.models;
 import java.util.ArrayList;
+import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -14,9 +15,9 @@ public class Writer extends AbstractUser {
     @Getter @Setter
     private  String biography;
 
-    @Transient
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
-    private ArrayList<AbstractBook>  books;
+    @OneToMany(mappedBy = "writer", cascade = CascadeType.ALL)
+    @Getter @Setter
+    private List<AbstractBook>  bookswrited;
     
     public Writer(){
         
@@ -25,14 +26,10 @@ public class Writer extends AbstractUser {
     public Writer( String name, String email, String password, String biography) {
         super(name, email, password);
         this.biography = biography;
-        this.books = new ArrayList<>(); // Inicializa una lista vacía
+        this.bookswrited = new ArrayList<>(); // Inicializa una lista vacía
     }
 
-    public void addBook(AbstractBook  book) {
-        
-        this.books.add(book); 
-    
-    }
+
 
     
 }

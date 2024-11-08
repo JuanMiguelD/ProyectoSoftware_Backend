@@ -25,5 +25,8 @@ public class BookDTO {
     @Getter @Setter
     private String type;
 
+    @Getter @Setter
+    private int price;
+
      
 }

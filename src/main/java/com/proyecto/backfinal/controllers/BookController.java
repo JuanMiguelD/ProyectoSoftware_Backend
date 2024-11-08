@@ -40,10 +40,10 @@ public class BookController {
             Writer writer =  (Writer) writercontent.get();
 
             if ("EBook".equalsIgnoreCase(bookDTO.getType())) {
-                book = new ElectronicBook(bookDTO.getIsbn(), bookDTO.getTitle(), bookDTO.getGenre(), bookDTO.getPublication(), writer, bookDTO.getContent());
+                book = new ElectronicBook(bookDTO.getIsbn(), bookDTO.getTitle(), bookDTO.getGenre(), bookDTO.getPublication(), writer, bookDTO.getContent(), bookDTO.getPrice());
             }
             else if ("audio".equalsIgnoreCase(bookDTO.getType())){
-                book = new AudioBook(bookDTO.getIsbn(), bookDTO.getTitle(), bookDTO.getGenre(), bookDTO.getPublication(),writer, bookDTO.getContent());
+                book = new AudioBook(bookDTO.getIsbn(), bookDTO.getTitle(), bookDTO.getGenre(), bookDTO.getPublication(),writer, bookDTO.getContent(), bookDTO.getPrice());
             }
             else {
                 return ResponseEntity.badRequest().build();

@@ -1,5 +1,8 @@
 package com.proyecto.backfinal.controllers;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,7 +37,7 @@ public class UserController {
         } else {
             return ResponseEntity.badRequest().body("Error: Tipo de usuario inválido");
         }
-
+        
         AbstractUser registeredUser = loginService.register(user);
         
         return ResponseEntity.ok().body("Usuario registrado exitosamente: " + registeredUser.getId());
@@ -42,12 +45,24 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestBody LoginDTO loginDTO) {
+    public List<AbstractBook> loginUser(@RequestBody LoginDTO loginDTO) {
 
         
         AbstractUser user = loginService.login(loginDTO.getEmail(), loginDTO.getPassword());
 
-        return ResponseEntity.ok().body("Inicio de sesión exitoso de usuario:  " + user.getId());
+        if (user == null) {
+            throw new RuntimeException("Invalid credentials"); // Maneja el login fallido adecuadamente
+        }
 
+        List<Purchase> listPurchases = user.getPurchases();
+        List<AbstractBook> purchasedBooks = new ArrayList<>();
+        for (Purchase purchase : listPurchases) {
+            purchasedBooks.add(purchase.getBook());
+            }
+        
+        return purchasedBooks; // Retorna el usuario con la lista de libros comprados ya cargada
     }
+
+    
+
 }

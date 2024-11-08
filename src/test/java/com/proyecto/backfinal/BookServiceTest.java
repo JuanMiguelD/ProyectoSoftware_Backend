@@ -35,7 +35,7 @@ class BookServiceTest {
         
         testWriter = new Writer("test Writer","examplemail@example.com","1234","hi");
         
-        testBook = new ElectronicBook("978-950-563-656-3","Title Test", "Genre Test", "2020-10-17",testWriter,"urlTest");
+        testBook = new ElectronicBook("978-950-563-656-3","Title Test", "Genre Test", "2020-10-17",testWriter,"urlTest",100);
         
         testBook.setWriter(testWriter);
     }
@@ -61,7 +61,7 @@ class BookServiceTest {
 
     @Test
     void updateBook_WhenBookExists_ShouldReturnUpdatedBook() {
-        AbstractBook updatedBook = new AudioBook("978-950-563-656-3","Updated Title", "Updated Genre", "2020-10-17",testWriter,"urlTest");
+        AbstractBook updatedBook = new AudioBook("978-950-563-656-3","Updated Title", "Updated Genre", "2020-10-17",testWriter,"urlTest",100);
 
 
         when(bookRepository.findById(1L)).thenReturn(Optional.of(testBook));
@@ -114,7 +114,7 @@ class BookServiceTest {
 
     @Test
     void getBook_WhenBookDoesNotExist_ShouldThrowException() {
-        testBook = new ElectronicBook("978-950-563-656-3","Title Test", "Genre Test", "2020-10-17",testWriter,"urlTest");
+        testBook = new ElectronicBook("978-950-563-656-3","Title Test", "Genre Test", "2020-10-17",testWriter,"urlTest",100);
         
         when(bookRepository.findById(1L)).thenReturn(Optional.empty());
 
