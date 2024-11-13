@@ -14,5 +14,5 @@ public class RegisterUserDTO {
     private String password;
     
     @Getter @Setter
-    private String role; 
+    private String userType; 
 }

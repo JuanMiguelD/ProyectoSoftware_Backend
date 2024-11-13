@@ -1,8 +1,11 @@
 package com.proyecto.backfinal.controllers;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,10 +36,10 @@ public class UserController {
         AbstractUser user;
 
         // Determina el tipo de usuario y crea una instancia de la subclase adecuada
-        if ("Writer".equalsIgnoreCase(userDTO.getRole())) {
+        if ("Writer".equalsIgnoreCase(userDTO.getUserType())) {
             user = new Writer(userDTO.getName(),userDTO.getEmail(),userDTO.getPassword(),null);
         }
-        else if ("Reader".equalsIgnoreCase(userDTO.getRole())) {
+        else if ("Reader".equalsIgnoreCase(userDTO.getUserType())) {
             user = new Reader(userDTO.getName(),userDTO.getEmail(),userDTO.getPassword());
 
         } else {
@@ -44,23 +47,36 @@ public class UserController {
         }
         
         AbstractUser registeredUser = loginService.register(user);
+
+        registeredUser.setToken(TokenGenerator.generateJwtToken());
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("accessToken", registeredUser.getToken());
         
-        return ResponseEntity.ok().body("Usuario registrado exitosamente: " + registeredUser.getId());
+        
+        return ResponseEntity.ok(response);
 
     }
 
     @PostMapping("/login")
-    public long loginUser(@RequestBody LoginDTO loginDTO) {
+    public ResponseEntity<?> loginUser(@RequestBody LoginDTO loginDTO) {
 
-        
         AbstractUser user = loginService.login(loginDTO.getEmail(), loginDTO.getPassword());
 
         if (user == null) {
-            throw new RuntimeException("Invalid credentials"); // Maneja el login fallido adecuadamente
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Credenciales inválidas"));
         }
 
-        return user.getId(); // Retorna el usuario con la lista de libros comprados ya cargada
+        String token = TokenGenerator.generateJwtToken();
+        user.setToken(token);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("accessToken", user.getToken());
+        response.put("userType", user.getRole());  // Asegúrate de tener `getRole` o un método similar
+
+        return ResponseEntity.ok(response);
     }
+
 
     //Obtener lo libros comprados por el usuario
     @GetMapping("/{userId}/purchased-books")

@@ -33,6 +33,14 @@ public abstract class AbstractUser {
     @Getter
     private List<Purchase> purchases;
 
+    @Getter @Setter
+    @Column(name = "role", nullable = false, insertable = false, updatable = false)
+    private String role; // Este campo almacena el tipo de usuario
+
+    @Getter @Setter
+    private String token;
+
+
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public  AbstractUser(String name, String email, String password) {
@@ -42,6 +50,7 @@ public abstract class AbstractUser {
         this.password = password;
         this.purchases = new ArrayList();
     }
+
 
     public AbstractUser() {
     }
