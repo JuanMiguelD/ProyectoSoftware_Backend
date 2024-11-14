@@ -19,6 +19,11 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+    public void saveUser(AbstractUser user){
+        userRepository.save(user);
+
+    }
+
     
 
     public Optional<AbstractUser> getUserByEmail(String email) {
@@ -64,6 +69,13 @@ public class UserService {
         } else {
             throw new RuntimeException("User not found with email: " + email);
         }
+    }
+
+    public AbstractUser getUserProfile(String Token){
+        if(userRepository.findByToken(Token).isPresent()){
+            return userRepository.findByToken(Token).get();
+        }
+        return null;
     }
     
 

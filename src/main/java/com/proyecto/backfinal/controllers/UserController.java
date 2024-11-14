@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,6 +19,7 @@ import com.proyecto.backfinal.DTO.*;
 import com.proyecto.backfinal.models.*;
 import com.proyecto.backfinal.services.LoginService;
 import com.proyecto.backfinal.services.PurchaseService;
+import com.proyecto.backfinal.services.UserService;
 
 @RestController
 @RequestMapping("/api/users")
@@ -29,6 +31,9 @@ public class UserController {
 
     @Autowired
     private PurchaseService purchaseService;
+
+    @Autowired
+    private UserService userService;
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody RegisterUserDTO userDTO) {
@@ -49,6 +54,7 @@ public class UserController {
         AbstractUser registeredUser = loginService.register(user);
 
         registeredUser.setToken(TokenGenerator.generateJwtToken());
+        userService.saveUser(registeredUser);
 
         Map<String, Object> response = new HashMap<>();
         response.put("accessToken", registeredUser.getToken());
@@ -68,12 +74,15 @@ public class UserController {
 
         String token = TokenGenerator.generateJwtToken();
         user.setToken(token);
+        userService.saveUser(user);
 
+        Map<String, Object> responseBody = new HashMap<>();
         Map<String, Object> response = new HashMap<>();
         response.put("accessToken", user.getToken());
         response.put("userType", user.getRole());  // Asegúrate de tener `getRole` o un método similar
+        responseBody.put("body", response);
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(responseBody);
     }
 
 
@@ -83,6 +92,22 @@ public class UserController {
         return purchaseService.getBooksPurchasedByUserId(userId);
     }
 
-    
+
+    @GetMapping("/profile")
+    public ResponseEntity<?> getProfile(@RequestHeader("Authorization") String token) {
+        if (token != null && token.startsWith("Bearer ")) {
+            token = token.substring(7);  // Elimina los 7 primeros caracteres ("Bearer ")
+        }
+
+        AbstractUser user = userService.getUserProfile(token);
+
+        Map<String,Object> response = new HashMap<>();
+        response.put("userId", user.getId());
+        response.put("userName", user.getName());
+        response.put("userEmail", user.getEmail());
+        response.put("userType", user.getRole());
+
+        return ResponseEntity.ok(response);
+    }  
 
 }
