@@ -1,5 +1,7 @@
 package com.proyecto.backfinal.services;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,6 +41,11 @@ public class BookService {
 
     public  List<AbstractBook> getAllBooks() {
         return bookRepository.findAll();
+    }
+
+    public Set<String> getAllGenre(){
+        List<AbstractBook> books = getAllBooks();
+        return books.stream().map(AbstractBook::getGenre).collect(Collectors.toSet());
     }
 
     public  AbstractBook getBook(Long isbn) {

@@ -4,7 +4,6 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
 import java.security.Key;
-import java.util.Date;
 
 public class TokenGenerator {
     public static String generateJwtToken() {

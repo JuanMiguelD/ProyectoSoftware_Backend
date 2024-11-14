@@ -53,7 +53,6 @@ public class UserController {
         Map<String, Object> response = new HashMap<>();
         response.put("accessToken", registeredUser.getToken());
         
-        
         return ResponseEntity.ok(response);
 
     }
