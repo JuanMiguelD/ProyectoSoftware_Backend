@@ -99,10 +99,10 @@ public class UserController {
             token = token.substring(7);  // Elimina los 7 primeros caracteres ("Bearer ")
         }
 
-        AbstractUser user = userService.getUserProfile(token);
+        AbstractUser user = userService.getUserByToken(token);
 
         Map<String,Object> response = new HashMap<>();
-        response.put("userId", user.getId());
+        response.put("userId", String.valueOf(user.getId()));
         response.put("userName", user.getName());
         response.put("userEmail", user.getEmail());
         response.put("userType", user.getRole());

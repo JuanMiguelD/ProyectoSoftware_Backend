@@ -71,7 +71,7 @@ public class UserService {
         }
     }
 
-    public AbstractUser getUserProfile(String Token){
+    public AbstractUser getUserByToken(String Token){
         if(userRepository.findByToken(Token).isPresent()){
             return userRepository.findByToken(Token).get();
         }
