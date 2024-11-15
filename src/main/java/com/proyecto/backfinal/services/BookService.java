@@ -23,13 +23,13 @@ public class BookService {
     }
     
 
-    public void  deleteBook(String isbn) {
-        bookRepository.deleteByIsbn(isbn);
+    public void  deleteBook(long id) {
+        bookRepository.deleteById(id);
     }
 
-    public AbstractBook updateBook(Long isbn, AbstractBook updatedBook){
+    public AbstractBook updateBook(Long id, AbstractBook updatedBook){
 
-        return bookRepository.findById(isbn).map(book -> {
+        return bookRepository.findById(id).map(book -> {
 
                 book.setTitle(updatedBook.getTitle());                
                 book.setGenre(updatedBook.getGenre());
@@ -48,8 +48,8 @@ public class BookService {
         return books.stream().map(AbstractBook::getGenre).collect(Collectors.toSet());
     }
 
-    public  AbstractBook getBook(Long isbn) {
-        return bookRepository.findById(isbn).orElseThrow(() -> new RuntimeException("Book not found"));
+    public  AbstractBook getBook(Long id) {
+        return bookRepository.findById(id).orElseThrow(() -> new RuntimeException("Book not found"));
     }
 
     public  List<AbstractBook> getBooksByWriterId(Long writer) {

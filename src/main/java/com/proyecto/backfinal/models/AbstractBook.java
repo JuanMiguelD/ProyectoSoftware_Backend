@@ -16,10 +16,8 @@ public abstract class AbstractBook {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Getter
     private long bookId;
-
-    @Getter @Setter
-    private  String isbn;
 
     @Getter @Setter
     private  String title;
@@ -34,6 +32,10 @@ public abstract class AbstractBook {
     @JoinColumn(name = "author_id", nullable=false)
     @Getter @Setter
     private  Writer writer;
+
+    @Getter @Setter
+    @Column(name = "type", nullable = false, insertable = false, updatable = false)
+    private String type; // Este campo almacena el tipo de usuario
 
     @ManyToMany
     @JoinTable(
@@ -54,8 +56,7 @@ public abstract class AbstractBook {
     private int precio;
     
 
-    public AbstractBook(String isbn,String title, String genre, String publication,  Writer author, String contenido, int precio) {
-        this.isbn = isbn;
+    public AbstractBook(String title, String genre, String publication,  Writer author, String contenido, int precio) {
         this.title = title;
         this.genre = genre;
         this.publication = publication;

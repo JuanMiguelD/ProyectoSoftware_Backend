@@ -4,8 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class BookDTO {
-    @Getter @Setter
-    private String isbn;
 
     @Getter @Setter
     private String title;

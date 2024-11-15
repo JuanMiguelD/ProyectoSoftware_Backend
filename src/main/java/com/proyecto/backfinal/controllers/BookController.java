@@ -43,17 +43,18 @@ public class BookController {
             Writer writer =  (Writer) writercontent.get();
 
             if ("EBook".equalsIgnoreCase(bookDTO.getType())) {
-                book = new ElectronicBook(bookDTO.getIsbn(), bookDTO.getTitle(), bookDTO.getGenre(), bookDTO.getPublication(), writer, bookDTO.getContent(), bookDTO.getPrice());
+                book = new ElectronicBook(bookDTO.getTitle(), bookDTO.getGenre(), bookDTO.getPublication(), writer, bookDTO.getContent(), bookDTO.getPrice());
             }
-            else if ("audio".equalsIgnoreCase(bookDTO.getType())){
-                book = new AudioBook(bookDTO.getIsbn(), bookDTO.getTitle(), bookDTO.getGenre(), bookDTO.getPublication(),writer, bookDTO.getContent(), bookDTO.getPrice());
+            else if ("Audio".equalsIgnoreCase(bookDTO.getType())){
+                book = new AudioBook(bookDTO.getTitle(), bookDTO.getGenre(), bookDTO.getPublication(),writer, bookDTO.getContent(), bookDTO.getPrice());
             }
             else {
                 return ResponseEntity.badRequest().build();
             }
-            AbstractBook newBook  = bookService.createBook(book);
+            
+            bookService.createBook(book);
 
-            return ResponseEntity.ok().body("Usuario registrado exitosamente: " + newBook.getIsbn());
+            return ResponseEntity.ok().body(book);
         }
         
 
@@ -61,19 +62,11 @@ public class BookController {
         
     }
 
-    @PostMapping("/bygenres")
-    public ResponseEntity<List<AbstractBook>> getBookByGenres(@RequestBody String genre){
-         List<AbstractBook> books = bookService.getBooksByGenre(genre);
-        if(books.isEmpty()){
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(books);
-    }
 
     @PostMapping("DeleteBook")
-    public ResponseEntity<?> deleteBook(@RequestBody String isbn){
+    public ResponseEntity<?> deleteBook(@RequestBody long id){
 
-        bookService.deleteBook(isbn);
+        bookService.deleteBook(id);
 
         return  ResponseEntity.ok().build();
 

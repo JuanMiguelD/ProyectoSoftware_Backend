@@ -7,9 +7,9 @@ import jakarta.persistence.Entity;
 @DiscriminatorValue("Audio Book")
 public class AudioBook extends AbstractBook{
     
-    public AudioBook(String isbn, String title,String genre, String publication, Writer author, String contenido, int precio){
+    public AudioBook(String title,String genre, String publication, Writer author, String contenido, int precio){
         
-        super(isbn,title, genre,publication, author, contenido, precio);
+        super(title, genre,publication, author, contenido, precio);
 
     }
 

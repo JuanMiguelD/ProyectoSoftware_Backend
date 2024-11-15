@@ -36,7 +36,7 @@ class BookServiceTest {
         
         testWriter = new Writer("test Writer","examplemail@example.com","1234","hi");
         
-        testBook = new ElectronicBook("978-950-563-656-3","Title Test", "Genre Test", "2020-10-17",testWriter,"urlTest",100);
+        testBook = new ElectronicBook("Title Test", "Genre Test", "2020-10-17",testWriter,"urlTest",100);
         
         testBook.setWriter(testWriter);
     }
@@ -48,21 +48,21 @@ class BookServiceTest {
         AbstractBook result = bookService.createBook(testBook);
 
         assertNotNull(result);
-        assertEquals(testBook.getIsbn(), result.getIsbn());
+        assertEquals(testBook.getBookId(), result.getBookId());
         assertEquals(testBook.getTitle(), result.getTitle());
         verify(bookRepository, times(1)).save(any(AbstractBook.class));
     }
 
     @Test
     void deleteBook_ShouldCallRepositoryDelete() {
-        bookService.deleteBook("978-950-563-656-3");
+        bookService.deleteBook(1);
 
-        verify(bookRepository, times(1)).deleteByIsbn("978-950-563-656-3");
+        verify(bookRepository, times(1)).deleteById(1);
     }
 
     @Test
     void updateBook_WhenBookExists_ShouldReturnUpdatedBook() {
-        AbstractBook updatedBook = new AudioBook("978-950-563-656-3","Updated Title", "Updated Genre", "2020-10-17",testWriter,"urlTest",100);
+        AbstractBook updatedBook = new AudioBook("Updated Title", "Updated Genre", "2020-10-17",testWriter,"urlTest",100);
 
 
         when(bookRepository.findById(1L)).thenReturn(Optional.of(testBook));
@@ -109,13 +109,13 @@ class BookServiceTest {
         AbstractBook result = bookService.getBook(1L);
 
         assertNotNull(result);
-        assertEquals(testBook.getIsbn(), result.getIsbn());
+        assertEquals(testBook.getBookId(), result.getBookId());
         verify(bookRepository, times(1)).findById(1L);
     }
 
     @Test
     void getBook_WhenBookDoesNotExist_ShouldThrowException() {
-        testBook = new ElectronicBook("978-950-563-656-3","Title Test", "Genre Test", "2020-10-17",testWriter,"urlTest",100);
+        testBook = new ElectronicBook("Title Test", "Genre Test", "2020-10-17",testWriter,"urlTest",100);
         
         when(bookRepository.findById(1L)).thenReturn(Optional.empty());
 

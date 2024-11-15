@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface BookRepository  extends JpaRepository<AbstractBook, Long> {
     
-    void  deleteByIsbn(String isbn);
+    void  deleteById(long id);
     
     List<AbstractBook> findByWriterId(Long writer);
 
