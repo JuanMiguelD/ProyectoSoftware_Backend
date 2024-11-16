@@ -45,12 +45,12 @@ public class BookController {
                 ObjectMapper objectMapper = new ObjectMapper();
                 BookDTO bookDTO = objectMapper.readValue(bookJson, BookDTO.class);
 
-                String uploadDir = System.getProperty("user.dir") + "/uploads/";
-                String filePath = uploadDir + contentFile.getOriginalFilename();
+                // Ruta absoluta para guardar físicamente el archivo
+                String absolutePath = System.getProperty("user.dir") + "/" +"uploads/" + contentFile.getOriginalFilename();
+                
+                contentFile.transferTo(new File(absolutePath));
 
-                contentFile.transferTo(new File(filePath));
-
-                bookDTO.setContent(filePath);
+                bookDTO.setContent(contentFile.getOriginalFilename());
 
                 AbstractBook book;
                 Optional<AbstractUser> writer;
@@ -60,10 +60,10 @@ public class BookController {
                     
                     switch (bookDTO.getType()) {
                         case "EBook":
-                            book = new AudioBook(bookDTO.getTitle(),bookDTO.getGenre(),bookDTO.getPublication(),Author,bookDTO.getContent(),bookDTO.getPrice());
+                            book = new AudioBook(bookDTO.getTitle(),bookDTO.getGenre(),bookDTO.getPublication(),Author,bookDTO.getContent(),bookDTO.getPrice(), bookDTO.getFormat());
                             break;
                         default:
-                            book = new ElectronicBook(bookDTO.getTitle(),bookDTO.getGenre(),bookDTO.getPublication(),Author,bookDTO.getContent(),bookDTO.getPrice());
+                            book = new ElectronicBook(bookDTO.getTitle(),bookDTO.getGenre(),bookDTO.getPublication(),Author,bookDTO.getContent(),bookDTO.getPrice(), bookDTO.getFormat());
                             break;
                     }
                     bookService.createBook(book);

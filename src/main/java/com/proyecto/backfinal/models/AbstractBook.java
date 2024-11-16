@@ -50,19 +50,23 @@ public abstract class AbstractBook {
 
 
     @Getter @Setter
-    private String contenido;
+    private String content;
 
     @Getter @Setter
-    private int precio;
+    private int price;
+
+    @Getter @Setter
+    private String format;
     
 
-    public AbstractBook(String title, String genre, String publication,  Writer author, String contenido, int precio) {
+    public AbstractBook(String title, String genre, String publication,  Writer author, String content, int price, String format) {
         this.title = title;
         this.genre = genre;
         this.publication = publication;
         this.writer = author;
-        this.contenido = contenido;
-        this.precio = precio;
+        this.content = content;
+        this.price = price;
+        this.format = format;
         
     }
 

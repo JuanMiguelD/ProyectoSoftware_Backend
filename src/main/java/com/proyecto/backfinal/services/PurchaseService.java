@@ -28,7 +28,7 @@ public class PurchaseService {
         Purchase purchase = new Purchase();
         purchase.setUser(buyer);
         purchase.setBook(book);
-        purchase.setPurchasePrice((double) book.getPrecio());
+        purchase.setPurchasePrice((double) book.getPrice());
         purchase.setPurchaseDate(LocalDateTime.now());
 
         return purchaseRepository.save(purchase);
