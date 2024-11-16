@@ -58,14 +58,12 @@ public class BookController {
                 if(!writer.isEmpty()){
                     Writer Author = (Writer) writer.get();
                     
-                    switch (bookDTO.getType()) {
-                        case "EBook":
-                            book = new AudioBook(bookDTO.getTitle(),bookDTO.getGenre(),bookDTO.getPublication(),Author,bookDTO.getContent(),bookDTO.getPrice(), bookDTO.getFormat());
-                            break;
-                        default:
-                            book = new ElectronicBook(bookDTO.getTitle(),bookDTO.getGenre(),bookDTO.getPublication(),Author,bookDTO.getContent(),bookDTO.getPrice(), bookDTO.getFormat());
-                            break;
+                    if(bookDTO.getType().equalsIgnoreCase("EBook")){
+                        book = new AudioBook(bookDTO.getTitle(),bookDTO.getGenre(),bookDTO.getPublication(),Author,bookDTO.getContent(),bookDTO.getPrice(), bookDTO.getFormat());
+                    } else{
+                        book = new ElectronicBook(bookDTO.getTitle(),bookDTO.getGenre(),bookDTO.getPublication(),Author,bookDTO.getContent(),bookDTO.getPrice(), bookDTO.getFormat());
                     }
+                    
                     bookService.createBook(book);
                     return ResponseEntity.ok().body(book);
                 }
