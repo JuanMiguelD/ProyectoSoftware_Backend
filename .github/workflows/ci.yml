@@ -79,16 +79,20 @@ jobs:
 
     - name: Create Release
       id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: actions/github-script@v6
       with:
-        tag_name: ${{ steps.get_release.outputs.result }}
-        release_name: Release ${{ steps.get_release.outputs.result }}
-        body: |
-          This release was generated automatically by the CI pipeline.
-        draft: false
-        prerelease: false
+          script: |
+            const release = await github.rest.repos.createRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag_name: '${{ steps.get_release.outputs.result }}',
+              name: 'Release ${{ steps.get_release.outputs.result }}',
+              body: 'This release was generated automatically by the CI pipeline.',
+              draft: false,
+              prerelease: false,
+            });
+            core.setOutput('upload_url', release.data.upload_url);
+      
 
     - name: Check release creation
       if: ${{ steps.create_release.outputs.upload_url == null }}
