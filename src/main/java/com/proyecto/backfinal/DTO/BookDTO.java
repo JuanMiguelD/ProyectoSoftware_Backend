@@ -25,6 +25,4 @@ public class BookDTO {
 
     @Getter @Setter
     private int price;
-
-     
 }

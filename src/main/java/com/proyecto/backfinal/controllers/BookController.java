@@ -1,19 +1,24 @@
 package com.proyecto.backfinal.controllers;
 
 
+import java.io.File;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.proyecto.backfinal.DTO.BookDTO;
 import com.proyecto.backfinal.models.AbstractBook;
 import com.proyecto.backfinal.models.AbstractUser;
@@ -33,33 +38,45 @@ public class BookController {
 
 
     @PostMapping("addBook")
-    public ResponseEntity<?> addBook(@RequestBody BookDTO bookDTO){
+    public ResponseEntity<?> addBook(@RequestParam("book") String bookJson, @RequestParam("content") MultipartFile contentFile){
 
-        AbstractBook book;
-        Optional<AbstractUser>  writercontent;
-        writercontent = userService.getUserById(bookDTO.getWriter());
+            try{
+                
+                ObjectMapper objectMapper = new ObjectMapper();
+                BookDTO bookDTO = objectMapper.readValue(bookJson, BookDTO.class);
 
-        if(!writercontent.isEmpty()){
-            Writer writer =  (Writer) writercontent.get();
+                String uploadDir = System.getProperty("user.dir") + "/uploads/";
+                String filePath = uploadDir + contentFile.getOriginalFilename();
 
-            if ("EBook".equalsIgnoreCase(bookDTO.getType())) {
-                book = new ElectronicBook(bookDTO.getTitle(), bookDTO.getGenre(), bookDTO.getPublication(), writer, bookDTO.getContent(), bookDTO.getPrice());
+                contentFile.transferTo(new File(filePath));
+
+                bookDTO.setContent(filePath);
+
+                AbstractBook book;
+                Optional<AbstractUser> writer;
+                writer = userService.getUserById(bookDTO.getWriter());
+                if(!writer.isEmpty()){
+                    Writer Author = (Writer) writer.get();
+                    
+                    switch (bookDTO.getType()) {
+                        case "EBook":
+                            book = new AudioBook(bookDTO.getTitle(),bookDTO.getGenre(),bookDTO.getPublication(),Author,bookDTO.getContent(),bookDTO.getPrice());
+                            break;
+                        default:
+                            book = new ElectronicBook(bookDTO.getTitle(),bookDTO.getGenre(),bookDTO.getPublication(),Author,bookDTO.getContent(),bookDTO.getPrice());
+                            break;
+                    }
+                    bookService.createBook(book);
+                    return ResponseEntity.ok().body(book);
+                }
+               
+                
+            } catch (Exception e){
+                e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(("Error al obtener libro"));
             }
-            else if ("Audio".equalsIgnoreCase(bookDTO.getType())){
-                book = new AudioBook(bookDTO.getTitle(), bookDTO.getGenre(), bookDTO.getPublication(),writer, bookDTO.getContent(), bookDTO.getPrice());
-            }
-            else {
-                return ResponseEntity.badRequest().build();
-            }
-            
-            bookService.createBook(book);
 
-            return ResponseEntity.ok().body(book);
-        }
-        
-
-        return ResponseEntity.badRequest().body("Error: No se halló el escritor");
-        
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(("Ocurrio un error al tratar de hacer la operación"));      
     }
 
 
