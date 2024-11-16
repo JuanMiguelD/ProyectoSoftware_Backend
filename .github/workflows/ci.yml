@@ -79,31 +79,24 @@ jobs:
 
     - name: Create Release
       id: create_release
-      uses: actions/github-script@v6
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-          script: |
-            const release = await github.rest.repos.createRelease({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              tag_name: '${{ steps.get_release.outputs.result }}',
-              name: 'Release ${{ steps.get_release.outputs.result }}',
-              body: 'This release was generated automatically by the CI pipeline.',
-              draft: false,
-              prerelease: false,
-            });
-            core.setOutput('upload_url', release.data.upload_url);
-      
-
-    - name: Check release creation
-      if: ${{ steps.create_release.outputs.upload_url == null }}
-      run: echo "Release creation failed. Skipping artifact upload."
-      continue-on-error: true
+        tag_name: ${{ steps.get_release.outputs.result }}
+        release_name: Release ${{ steps.get_release.outputs.result }}
+        body: |
+          This release was generated automatically by the CI pipeline.
+        draft: false
+        prerelease: false
 
     - name: Upload Artifact
       if: ${{ steps.create_release.outputs.upload_url != null }}
       uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: target/your-artifact-name.jar  # Cambia esto al path del archivo generado
-        asset_name: your-artifact-name.jar
+        asset_path: ./release_${{ steps.get_release.outputs.result }}.jar  # Cambia esto al path del archivo generado
+        asset_name: release_${{ steps.get_release.outputs.result }}.jar
         asset_content_type: application/java-archive
