@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -87,9 +86,15 @@ public class UserController {
 
 
     //Obtener lo libros comprados por el usuario
-    @GetMapping("/{userId}/purchased-books")
-    public List<AbstractBook> getPurchasedBooks(@PathVariable Long userId) {
-        return purchaseService.getBooksPurchasedByUserId(userId);
+    @GetMapping("/purchased-books")
+    public List<AbstractBook> getPurchasedBooks(@RequestHeader("Authorization") String token) {
+        if (token != null && token.startsWith("Bearer ")) {
+            token = token.substring(7);  // Elimina los 7 primeros caracteres ("Bearer ")
+        }
+
+        AbstractUser user = userService.getUserByToken(token);
+
+        return purchaseService.getBooksPurchasedByUserId(user.getId());
     }
 
 
