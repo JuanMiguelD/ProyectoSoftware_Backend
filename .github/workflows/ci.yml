@@ -23,11 +23,32 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-maven
 
+    - name: Get the latest release
+      id: get_release
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const latestRelease = await github.rest.repos.getLatestRelease({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+          }).catch(() => null); // Maneja casos sin releases previas
+          
+          if (latestRelease) {
+            const versionParts = latestRelease.data.tag_name.split('.');
+            versionParts[versionParts.length - 1] = (parseInt(versionParts[versionParts.length - 1]) + 1).toString();
+            return versionParts.join('.');
+          } else {
+            return '1.0'; // Versión inicial si no hay releases previas
+          }
+        result-encoding: string
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
     - name: Build the project
       id: build_project
       run: |
         mvn clean package -B -V
-        mv target/*.jar target/release-${{ github.run_id }}.jar
+        mv target/*.jar target/release-${{ steps.get_release.outputs.result }}.jar
 
   test:
     runs-on: ubuntu-latest
