@@ -12,9 +12,11 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf().disable() // Desactiva CSRF si estás en local para pruebas
-            .authorizeRequests()
-            .anyRequest().permitAll(); // Permite acceso a todos los endpoints sin autenticación
+        .csrf().disable()
+        .authorizeRequests()
+        .anyRequest().permitAll()
+        .and()
+        .headers().contentSecurityPolicy("frame-ancestors 'self' http://localhost:5173");
 
         return http.build();
     }
