@@ -90,6 +90,12 @@ jobs:
         draft: false
         prerelease: false
 
+    - name: Download Artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: release_${{ steps.get_release.outputs.result }}.jar
+        path: ./release_${{ steps.get_release.outputs.result }}.jar
+
     - name: Upload Artifact
       if: ${{ steps.create_release.outputs.upload_url != null }}
       uses: actions/upload-release-asset@v1
