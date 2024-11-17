@@ -115,6 +115,12 @@ jobs:
           This release was generated automatically by the CI pipeline.
         draft: false
         prerelease: false
+    
+    - name: Build the project
+      id: build_project
+      run: |
+        mvn clean package -B -V
+        mv target/*.jar target/release-${{ steps.get_release.outputs.result }}.jar
 
     - name: Upload Artifact
       if: ${{ steps.create_release.outputs.upload_url != null }}
