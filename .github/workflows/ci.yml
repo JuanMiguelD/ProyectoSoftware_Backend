@@ -9,7 +9,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Set up JDK 21
+    - name: Set up JDK 11
       uses: actions/setup-java@v2
       with:
         distribution: 'adopt'
@@ -24,7 +24,7 @@ jobs:
           ${{ runner.os }}-maven
 
     - name: Build the project
-      run: mvn clean package -B -V
+      run: mvn clean package
 
 
   test:
@@ -34,7 +34,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Set up JDK 21
+    - name: Set up JDK 11
       uses: actions/setup-java@v2
       with:
         distribution: 'adopt'
@@ -50,11 +50,11 @@ jobs:
 
     - name: Run tests
       run: mvn clean test
-
   release:
     runs-on: ubuntu-latest
     needs: test
     if: github.ref == 'refs/heads/main' # Solo genera una release en la rama principal
+
     steps:
     - name: Get the latest release
       id: get_release
@@ -78,6 +78,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Create Release
+      id: create_release
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -89,10 +90,19 @@ jobs:
         draft: false
         prerelease: false
 
+    - name: Download Artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: release_${{ steps.get_release.outputs.result }}.jar
+        path: ./release_${{ steps.get_release.outputs.result }}.jar
+
     - name: Upload Artifact
+      if: ${{ steps.create_release.outputs.upload_url != null }}
       uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: target/your-artifact-name.jar  # Cambia esto al path del archivo generado
-        asset_name: your-artifact-name.jar
+        asset_path: ./release_${{ steps.get_release.outputs.result }}.jar  # Cambia esto al path del archivo generado
+        asset_name: release_${{ steps.get_release.outputs.result }}.jar
         asset_content_type: application/java-archive
