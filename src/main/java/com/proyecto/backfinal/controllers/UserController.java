@@ -78,7 +78,8 @@ public class UserController {
         Map<String, Object> responseBody = new HashMap<>();
         Map<String, Object> response = new HashMap<>();
         response.put("accessToken", user.getToken());
-        response.put("userType", user.getRole());  // Asegúrate de tener `getRole` o un método similar
+        response.put("userType", user.getRole());
+        response.put("userId", user.getId());
         responseBody.put("body", response);
 
         return ResponseEntity.ok(responseBody);
