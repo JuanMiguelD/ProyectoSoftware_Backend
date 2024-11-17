@@ -70,6 +70,8 @@ jobs:
     - name: Upload Artifact
       if: ${{ steps.create_release.outputs.upload_url != null }}
       uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: target/release-${{ steps.get_release.outputs.result }}.jar
@@ -98,33 +100,3 @@ jobs:
 
     - name: Run tests
       run: mvn clean test
-
-  release:
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' # Solo genera una release en la rama principal
-
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: Get the latest release
-      id: get_release
-      uses: actions/github-script@v6
-      with:
-        script: |
-          const latestRelease = await github.rest.repos.getLatestRelease({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-          }).catch(() => null); // Maneja casos sin releases previas
-          
-          if (latestRelease) {
-            const versionParts = latestRelease.data.tag_name.split('.');
-            versionParts[versionParts.length - 1] = (parseInt(versionParts[versionParts.length - 1]) + 1).toString();
-            return versionParts.join('.');
-          } else {
-            return '1.0'; // Versión inicial si no hay releases previas
-          }
-        result-encoding: string
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-
