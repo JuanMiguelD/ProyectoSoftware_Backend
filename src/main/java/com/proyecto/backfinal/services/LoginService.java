@@ -15,6 +15,10 @@ public class LoginService {
     public AbstractUser login(String email, String password) {
         Optional<AbstractUser> userOptional = userRepository.findByEmail(email);
     
+        if (email == null || password == null ) {
+            return null; // Retorna null si el usuario o el email es nulo o vacío
+        }
+
         // Verifica si el usuario está presente y si la contraseña coincide
         if (userOptional != null && userOptional.isPresent()) {
             AbstractUser user = userOptional.get();
@@ -27,10 +31,14 @@ public class LoginService {
     }
 
     public AbstractUser register(AbstractUser user) {
+        if (user == null || user.getEmail() == null || user.getEmail().isEmpty()) {
+            return null; // Retorna null si el usuario o el email es nulo o vacío
+        }
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
             return null; // Retorna null si el usuario ya existe
         }
         return userRepository.save(user); // Guarda al usuario en la base de datos
     }
+    
 }
 

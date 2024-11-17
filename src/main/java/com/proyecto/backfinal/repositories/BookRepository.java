@@ -13,6 +13,8 @@ public interface BookRepository  extends JpaRepository<AbstractBook, Long> {
     List<AbstractBook> findByWriterId(Long writer);
 
     List<AbstractBook> findByGenre(String genre);
+
+    boolean existsByTitleAndWriterId(String title, long id);
     
 
     

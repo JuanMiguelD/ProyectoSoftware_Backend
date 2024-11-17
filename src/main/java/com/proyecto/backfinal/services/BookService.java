@@ -19,6 +19,10 @@ public class BookService {
     }
     
     public AbstractBook createBook(AbstractBook book) {
+        boolean exists = bookRepository.existsByTitleAndWriterId(book.getTitle(), book.getWriter().getId());
+        if (exists) {
+            throw new IllegalArgumentException("A book with the same title and writer already exists.");
+        }
         return bookRepository.save(book);
     }
     

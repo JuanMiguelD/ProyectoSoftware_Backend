@@ -44,6 +44,7 @@ public class UserServiceTest {
         assertEquals(email, result.get().getEmail());
     }
 
+    //Prueba para cuando no se halla al usuario
     @Test
     void testGetUserByEmail_UserNotFound() {
 
@@ -106,5 +107,48 @@ public class UserServiceTest {
 
         assertThrows(RuntimeException.class, () -> userService.changePassword("test@example.com", oldPassword, "newPassword"));
     }
+
+    // Prueba para eliminar un usuario
+    @Test
+    public void testDeleteUser_Successful() {
+        String email = "test@example.com";
+        AbstractUser user = new Writer("Test Name", email, "password", "test");
+
+        // Configuración del mock
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+
+        // Llamada al método
+        userService.deleteUser(email);
+
+        // Verificar que el repositorio delete() ha sido llamado una vez
+        verify(userRepository, times(1)).delete(user);
+    }
+
+    // Prueba para eliminar un usuario cuando no existe
+    @Test
+    public void testDeleteUser_UserNotFound() {
+        String email = "nonexistent@example.com";
+        
+        // Configuración del mock
+        when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
+
+        // Verificar que se lanza la excepción
+        assertThrows(RuntimeException.class, () -> userService.deleteUser(email));
+    }
+
+    @Test
+    public void testUpdateUser_UserNotFound() {
+        String email = "nonexistent@example.com";
+        AbstractUser updatedUser = new Writer("New Name", email, "1234", "hola");
+
+        // Configuración del mock para que no se encuentre el usuario
+        when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
+
+        // Verificar que se lanza una excepción
+        assertThrows(RuntimeException.class, () -> userService.updateUser(email, updatedUser));
+    }
+
+    
+
 }
 

@@ -13,6 +13,7 @@ import com.proyecto.backfinal.services.BookService;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -184,4 +185,38 @@ class BookServiceTest {
         assertTrue(result.isEmpty());
         verify(bookRepository, times(1)).findByGenre(genre);
     }
+
+    @Test
+    void createBook_WhenDuplicateBook_ShouldThrowException() {
+        when(bookRepository.existsByTitleAndWriterId(testBook.getTitle(), testWriter.getId()))
+            .thenReturn(true);
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> 
+            bookService.createBook(testBook)
+        );
+
+        assertEquals("A book with the same title and writer already exists.", exception.getMessage());
+        verify(bookRepository, never()).save(any(AbstractBook.class));
+    }
+
+    @Test
+    void getAllGenre_ShouldReturnUniqueGenres() {
+        List<AbstractBook> books = Arrays.asList(
+            new ElectronicBook("Title1", "Genre1", "2020-10-17", testWriter, "url1", 100, "pdf"),
+            new AudioBook("Title2", "Genre2", "2020-10-17", testWriter, "url2", 200, "mp3"),
+            new AudioBook("Title3", "Genre1", "2020-10-17", testWriter, "url3", 300, "mp3")
+        );
+
+        when(bookRepository.findAll()).thenReturn(books);
+
+        Set<String> result = bookService.getAllGenre();
+
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertTrue(result.contains("Genre1"));
+        assertTrue(result.contains("Genre2"));
+        verify(bookRepository, times(1)).findAll();
+    }
+
+
 }

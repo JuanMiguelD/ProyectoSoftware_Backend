@@ -92,4 +92,80 @@ public class LoginServiceTest {
         assertNotNull(result); // Verifica que el usuario fue registrado correctamente
         assertEquals("newuser@example.com", result.getEmail());
     }
+
+    // Prueba del método login cuando el email es nulo
+    @Test
+    void testLogin_Failure_NullEmail() {
+        // When
+        AbstractUser result = loginService.login(null, "password123");
+        
+        // Then
+        assertNull(result);
+        
+    }
+
+    // Prueba del método login cuando la contraseña es nula
+    @Test
+    void testLogin_Failure_NullPassword() {
+        // Given
+        AbstractUser user = new Writer("testname", "testemail@example.com", "password123", null);
+        
+        // When
+        when(userRepository.findByEmail("testemail@example.com")).thenReturn(Optional.of(user));
+        AbstractUser result = loginService.login("testemail@example.com", null);
+
+        // Then
+        assertNull(result);
+    }
+
+    // Prueba del método register cuando el usuario ya existe
+    @Test
+    void testRegister_Failure_UserAlreadyExists() {
+        // Given
+        AbstractUser user = new Reader("existingusername", "existinguser@example.com", "password123");
+        
+        // When
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        AbstractUser result = loginService.register(user);
+
+        // Then
+        assertNull(result);
+    }
+
+    // Prueba del método register cuando se intenta registrar un usuario nulo
+    @Test
+    void testRegister_Failure_NullUser() {
+        // When
+        AbstractUser result = loginService.register(null);
+
+        // Then
+        assertNull(result);
+    }
+
+    // Prueba del método register cuando el email del usuario es nulo
+    @Test
+    void testRegister_Failure_NullEmail() {
+        // Given
+        AbstractUser user = new Reader("username", null, "password123");
+
+        // When
+        AbstractUser result = loginService.register(user);
+
+        // Then
+        assertNull(result);
+    }
+
+    // Prueba del método register cuando la contraseña del usuario es nula
+    @Test
+    void testRegister_Failure_NullPassword() {
+        // Given
+        AbstractUser user = new Reader("username", "newuser@example.com", null);
+
+        // When
+        AbstractUser result = loginService.register(user);
+
+        // Then
+        assertNull(result);
+    }
+
 }
