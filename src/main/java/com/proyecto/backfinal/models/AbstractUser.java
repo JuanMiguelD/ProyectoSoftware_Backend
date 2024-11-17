@@ -37,6 +37,7 @@ public abstract class AbstractUser {
     @Column(name = "role", nullable = false, insertable = false, updatable = false)
     private String role; // Este campo almacena el tipo de usuario
 
+    @Transient
     @Getter @Setter
     private String token;
 

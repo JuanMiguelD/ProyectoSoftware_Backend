@@ -24,6 +24,7 @@ import com.proyecto.backfinal.models.AbstractBook;
 import com.proyecto.backfinal.models.AbstractUser;
 import com.proyecto.backfinal.models.AudioBook;
 import com.proyecto.backfinal.models.ElectronicBook;
+import com.proyecto.backfinal.models.JwtValidator;
 import com.proyecto.backfinal.models.Writer;
 import com.proyecto.backfinal.services.BookService;
 import com.proyecto.backfinal.services.UserService;
@@ -53,28 +54,27 @@ public class BookController {
                 bookDTO.setContent(contentFile.getOriginalFilename());
 
                 AbstractBook book;
-                Optional<AbstractUser> writer;
-                writer = userService.getUserById(bookDTO.getWriter());
-                if(!writer.isEmpty()){
-                    Writer Author = (Writer) writer.get();
-                    
+                Optional<AbstractUser> author;
+                author =  userService.getUserById(bookDTO.getWriter());
+
+                if(!author.isEmpty()){
+                    Writer writer = (Writer) author.get();
                     if(bookDTO.getType().equalsIgnoreCase("EBook")){
-                        book = new AudioBook(bookDTO.getTitle(),bookDTO.getGenre(),bookDTO.getPublication(),Author,bookDTO.getContent(),bookDTO.getPrice(), bookDTO.getFormat());
+                        book = new AudioBook(bookDTO.getTitle(),bookDTO.getGenre(),bookDTO.getPublication(),writer,bookDTO.getContent(),bookDTO.getPrice(), bookDTO.getFormat());
                     } else{
-                        book = new ElectronicBook(bookDTO.getTitle(),bookDTO.getGenre(),bookDTO.getPublication(),Author,bookDTO.getContent(),bookDTO.getPrice(), bookDTO.getFormat());
+                        book = new ElectronicBook(bookDTO.getTitle(),bookDTO.getGenre(),bookDTO.getPublication(),writer,bookDTO.getContent(),bookDTO.getPrice(), bookDTO.getFormat());
                     }
                     
                     bookService.createBook(book);
                     return ResponseEntity.ok().body(book);
                 }
-               
+                               
                 
             } catch (Exception e){
                 e.printStackTrace();
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(("Error al obtener libro"));
             }
-
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(("Ocurrio un error al tratar de hacer la operación"));      
+            return null;
     }
 
 
@@ -107,18 +107,29 @@ public class BookController {
     }
 
     @GetMapping("BooksByWriter")
-    public ResponseEntity<List<AbstractBook>> getBooksByWriter(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<?> getBooksByWriter(@RequestHeader("Authorization") String token) {
         if (token != null && token.startsWith("Bearer ")) {
+            
             token = token.substring(7);  // Elimina los 7 primeros caracteres ("Bearer ")
         }
-    
-        AbstractUser writer = userService.getUserByToken(token);
+        if(JwtValidator.validateJwtToken(token)){
+            Long userId = JwtValidator.getUserIdFromJwtToken(token);
+            Optional<AbstractUser> author = userService.getUserById(userId);
+            if(!author.isEmpty()){
+                Writer writer = (Writer) author.get();
+                List<AbstractBook> books = bookService.getBooksByWriterId(writer.getId());
+                if (books.isEmpty()) {
+                    return ResponseEntity.noContent().build();
+                }
+                return ResponseEntity.ok(books);
 
-        List<AbstractBook> books = bookService.getBooksByWriterId(writer.getId());
-        if (books.isEmpty()) {
-            return ResponseEntity.noContent().build();
+            }
+            
+            
         }
-        return ResponseEntity.ok(books);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No autorizado");
+
+        
 
     } 
 }

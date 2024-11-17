@@ -52,11 +52,13 @@ public class UserController {
         
         AbstractUser registeredUser = loginService.register(user);
 
-        registeredUser.setToken(TokenGenerator.generateJwtToken());
+        registeredUser.setToken(TokenGenerator.generateJwtToken(registeredUser.getId()));
         userService.saveUser(registeredUser);
 
         Map<String, Object> response = new HashMap<>();
         response.put("accessToken", registeredUser.getToken());
+        response.put("userId", registeredUser.getId());
+        response.put("typeUser", registeredUser.getRole());
         
         return ResponseEntity.ok(response);
 
@@ -71,7 +73,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Credenciales inválidas"));
         }
 
-        String token = TokenGenerator.generateJwtToken();
+        String token = TokenGenerator.generateJwtToken(user.getId());
         user.setToken(token);
         userService.saveUser(user);
 
@@ -89,13 +91,21 @@ public class UserController {
     //Obtener lo libros comprados por el usuario
     @GetMapping("/purchased-books")
     public List<AbstractBook> getPurchasedBooks(@RequestHeader("Authorization") String token) {
+        
         if (token != null && token.startsWith("Bearer ")) {
             token = token.substring(7);  // Elimina los 7 primeros caracteres ("Bearer ")
         }
 
-        AbstractUser user = userService.getUserByToken(token);
+        if(JwtValidator.validateJwtToken(token)){
 
-        return purchaseService.getBooksPurchasedByUserId(user.getId());
+            Long userId = JwtValidator.getUserIdFromJwtToken(token);
+
+            AbstractUser user = userService.getUserById(userId).get();
+
+             return purchaseService.getBooksPurchasedByUserId(user.getId());
+
+        }
+        return null;
     }
 
 
@@ -105,15 +115,21 @@ public class UserController {
             token = token.substring(7);  // Elimina los 7 primeros caracteres ("Bearer ")
         }
 
-        AbstractUser user = userService.getUserByToken(token);
+        if(JwtValidator.validateJwtToken(token)){
+            Long userId = JwtValidator.getUserIdFromJwtToken(token);
+            AbstractUser user = userService.getUserById(userId).get();
+            
 
-        Map<String,Object> response = new HashMap<>();
-        response.put("userId", String.valueOf(user.getId()));
-        response.put("userName", user.getName());
-        response.put("userEmail", user.getEmail());
-        response.put("userType", user.getRole());
-
-        return ResponseEntity.ok(response);
+            Map<String,Object> response = new HashMap<>();
+            response.put("userId", String.valueOf(user.getId()));
+            response.put("userName", user.getName());
+            response.put("userEmail", user.getEmail());
+            response.put("userType", user.getRole());
+            return ResponseEntity.ok(response);
+        }
+    
+        return null;
+        
     }  
 
 }

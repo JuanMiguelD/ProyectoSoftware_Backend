@@ -71,14 +71,6 @@ public class UserService {
         }
     }
 
-    public AbstractUser getUserByToken(String Token){
-        if(userRepository.findByToken(Token).isPresent()){
-            return userRepository.findByToken(Token).get();
-        }
-        return null;
-    }
-    
-
     
 
 }

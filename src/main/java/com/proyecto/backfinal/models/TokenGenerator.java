@@ -1,15 +1,21 @@
 package com.proyecto.backfinal.models;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
+
 
 import java.security.Key;
+import java.util.Date;
 
 public class TokenGenerator {
-    public static String generateJwtToken() {
-        Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256); // Genera una clave segura de 256 bits
+    private static JwtConfig jwtConfig = JwtConfig.getJwtConfig();
+    private static final Key key = jwtConfig.getKey();
+    private static final long EXPIRATION_TIME = 60 * 60 * 1000; // 15 minutos en milisegundos
+
+    public static String generateJwtToken(long userId) {
         return Jwts.builder()
                    .setSubject("usuario")
+                   .claim("userId", userId)
+                   .setIssuedAt(new Date())
+                   .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                    .signWith(key)
                    .compact();
     }
